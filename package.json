@@ -1,7 +1,7 @@
 {
-  "name": "budapest-rentals",
+  "name": "feszek",
   "version": "1.0.0",
-  "description": "No-fee apartment rental board for Budapest students & tenants. Owners pay a flat 500 Ft to publish a listing.",
+  "description": "Fészek — apartments, marketplace, and jobs & services for students in Budapest. Owners pay a flat 500 Ft to publish an apartment listing; everything else is free.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

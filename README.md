@@ -1,4 +1,4 @@
-# Budapest Rentals
+# Fészek
 
 A student-focused listing site for Budapest with three sections under one
 brand: **Apartments** (the original no-fee rental board), **Marketplace**
@@ -208,7 +208,7 @@ uploads/id_cards/        Private — admin-only, never served publicly (apartmen
 
 ## Redeploying your live site with this update
 
-If Budapest Rentals is already live on Railway with real listings, this
+If Fészek is already live on Railway with real listings, this
 update is safe to push over it — no data migration needed:
 
 - The database migration only **adds** new tables (`market_items`,
