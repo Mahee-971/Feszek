@@ -1,0 +1,67 @@
+<%- include('partials/header', { pageTitle: listing.title + ' — Budapest Rentals' }) %>
+
+<a class="back-link" href="/apartments">&larr; Back to listings</a>
+
+<div class="detail-layout">
+  <div class="detail-main">
+    <div class="gallery">
+      <% if (listing.images.length === 0) { %>
+        <div class="no-photo large">No photos</div>
+      <% } else { %>
+        <img class="gallery-main" src="/uploads/photos/<%= listing.images[0].filename %>" alt="<%= listing.title %>" id="mainPhoto">
+        <% if (listing.images.length > 1) { %>
+          <div class="gallery-thumbs">
+            <% listing.images.forEach(img => { %>
+              <img src="/uploads/photos/<%= img.filename %>" class="thumb" onclick="document.getElementById('mainPhoto').src=this.src">
+            <% }) %>
+          </div>
+        <% } %>
+      <% } %>
+    </div>
+
+    <h1><%= listing.title %></h1>
+    <p class="detail-meta">
+      <%= listing.district %> ·
+      <%= listing.listing_type === 'room' ? 'Room in shared flat' : 'Whole apartment' %>
+      <% if (listing.rooms) { %> · <%= listing.rooms %> room<%= listing.rooms > 1 ? 's' : '' %><% } %>
+      <% if (listing.size_m2) { %> · <%= listing.size_m2 %> m²<% } %>
+    </p>
+
+    <div class="tags">
+      <% if (listing.bills_included) { %><span class="tag">Bills included</span><% } %>
+      <% if (listing.furnished) { %><span class="tag">Furnished</span><% } %>
+      <% if (listing.pets_allowed) { %><span class="tag">Pets allowed</span><% } %>
+      <% if (listing.available_from) { %><span class="tag">Available from <%= listing.available_from %></span><% } %>
+    </div>
+
+    <h2>Description</h2>
+    <p class="description"><%= listing.description %></p>
+
+    <h2>Location</h2>
+    <p class="address"><%= listing.address %>, <%= listing.district %>, Budapest</p>
+    <% if (listing.lat && listing.lng) { %>
+      <div id="map" class="detail-map" data-lat="<%= listing.lat %>" data-lng="<%= listing.lng %>"></div>
+    <% } %>
+  </div>
+
+  <aside class="detail-sidebar">
+    <div class="price-box">
+      <div class="big-price"><%= listing.price_huf.toLocaleString('en-US') %> Ft <span>/ month</span></div>
+    </div>
+    <div class="contact-box">
+      <h3>Contact the owner</h3>
+      <p><strong><%= listing.owner_name %></strong></p>
+      <p><a href="tel:<%= listing.owner_phone %>">📞 <%= listing.owner_phone %></a></p>
+      <p><a href="mailto:<%= listing.owner_email %>">✉️ <%= listing.owner_email %></a></p>
+      <p class="fine-print">Free to contact — no fees for tenants. Always view a place before paying anything.</p>
+    </div>
+  </aside>
+</div>
+
+<% if (listing.lat && listing.lng) { %>
+<link rel="stylesheet" href="/vendor/leaflet/leaflet.css" />
+<script src="/vendor/leaflet/leaflet.js"></script>
+<script src="/js/detail-map.js"></script>
+<% } %>
+
+<%- include('partials/footer') %>

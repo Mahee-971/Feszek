@@ -1,0 +1,13 @@
+<%- include('partials/header', { pageTitle: 'Admin login — Budapest Rentals' }) %>
+
+<div class="pay-box">
+  <h1>Admin login</h1>
+  <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+  <form method="POST" action="/admin/login" class="submit-form">
+    <label>Username <input type="text" name="username" required autofocus></label>
+    <label>Password <input type="password" name="password" required></label>
+    <button type="submit" class="btn btn-primary btn-large">Log in</button>
+  </form>
+</div>
+
+<%- include('partials/footer') %>

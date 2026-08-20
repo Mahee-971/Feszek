@@ -1,0 +1,57 @@
+<%- include('partials/header', { pageTitle: item.title + ' — Marketplace — Budapest Rentals' }) %>
+
+<a class="back-link" href="/marketplace">&larr; Back to marketplace</a>
+
+<% if (posted) { %>
+  <div class="alert" style="background:#e5f3ea;color:#1e5f4e;border:1px solid #b9dcc5;">✅ Your item is live! Share the link with anyone who might want it.</div>
+<% } %>
+
+<div class="detail-layout">
+  <div class="detail-main">
+    <div class="gallery">
+      <% if (item.images.length === 0) { %>
+        <div class="no-photo large">No photos</div>
+      <% } else { %>
+        <img class="gallery-main" src="/uploads/photos/<%= item.images[0].filename %>" alt="<%= item.title %>" id="mainPhoto">
+        <% if (item.images.length > 1) { %>
+          <div class="gallery-thumbs">
+            <% item.images.forEach(img => { %>
+              <img src="/uploads/photos/<%= img.filename %>" class="thumb" onclick="document.getElementById('mainPhoto').src=this.src">
+            <% }) %>
+          </div>
+        <% } %>
+      <% } %>
+    </div>
+
+    <h1><%= item.title %></h1>
+    <p class="detail-meta"><%= categoryLabel(item.category) %><% if (item.district) { %> · <%= item.district %><% } %></p>
+
+    <div class="tags">
+      <span class="condition-tag">Condition: <%= conditionLabel(item.condition_label) %></span>
+      <% if (item.pickup_note) { %><span class="tag">📍 <%= item.pickup_note %></span><% } %>
+    </div>
+
+    <h2>Description</h2>
+    <p class="description"><%= item.description %></p>
+  </div>
+
+  <aside class="detail-sidebar">
+    <div class="price-box">
+      <div class="big-price">
+        <% if (item.is_free) { %>Free<% } else { %><%= item.price_huf.toLocaleString('en-US') %> Ft<% } %>
+      </div>
+    </div>
+    <div class="contact-box">
+      <h3>Contact the seller</h3>
+      <p><strong><%= item.seller_name %></strong></p>
+      <p><%= item.seller_contact %></p>
+      <p class="fine-print">Meet in a public place if you can, and don't send money before seeing the item.</p>
+    </div>
+    <form method="POST" action="/marketplace/<%= item.id %>/report" onsubmit="return confirm('Report this listing as spam, scam, or inappropriate?');">
+      <input type="hidden" name="reason" value="reported from item page">
+      <button type="submit" class="report-link" style="background:none;border:none;cursor:pointer;text-decoration:underline;">🚩 Report this listing</button>
+    </form>
+  </aside>
+</div>
+
+<%- include('partials/footer') %>

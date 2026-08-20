@@ -1,0 +1,97 @@
+<%- include('partials/header', { pageTitle: 'Post an item — Marketplace — Budapest Rentals' }) %>
+
+<a class="back-link" href="/marketplace">&larr; Back to marketplace</a>
+
+<h1>Post an item</h1>
+<p class="subtitle">Moving out and want to sell or give away your stuff? It's completely free to post — always.</p>
+
+<% if (error) { %>
+  <div class="alert alert-error"><%= error %></div>
+<% } %>
+
+<form class="submit-form" method="POST" action="/marketplace/post" enctype="multipart/form-data">
+  <fieldset>
+    <legend>1. The item</legend>
+
+    <label>Title
+      <input type="text" name="title" placeholder="e.g. IKEA desk, good condition" value="<%= old.title || '' %>" required>
+    </label>
+
+    <label>Description
+      <textarea name="description" rows="5" placeholder="Size, brand, any wear, why you're selling, etc." required><%= old.description || '' %></textarea>
+    </label>
+
+    <div class="form-row">
+      <label>Category
+        <select name="category" required>
+          <% categories.forEach(c => { %>
+            <option value="<%= c.value %>" <%= old.category === c.value ? 'selected' : '' %>><%= c.label %></option>
+          <% }) %>
+        </select>
+      </label>
+      <label>Condition
+        <select name="condition_label" required>
+          <% conditions.forEach(c => { %>
+            <option value="<%= c.value %>" <%= old.condition_label === c.value ? 'selected' : '' %>><%= c.label %></option>
+          <% }) %>
+        </select>
+      </label>
+    </div>
+
+    <div class="checkbox-row" style="margin-bottom:14px;">
+      <label><input type="checkbox" name="is_free" id="isFree" <%= old.is_free ? 'checked' : '' %>> Giving it away for free</label>
+    </div>
+    <label id="priceLabel">Price (Ft)
+      <input type="number" name="price_huf" min="1" placeholder="5000" value="<%= old.price_huf || '' %>">
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend>2. Pickup</legend>
+    <div class="form-row">
+      <label>District
+        <select name="district">
+          <option value="">Not sure / flexible</option>
+          <% districts.forEach(d => { %>
+            <option value="<%= d %>" <%= old.district === d ? 'selected' : '' %>><%= d %></option>
+          <% }) %>
+        </select>
+      </label>
+      <label class="grow">Pickup note (optional)
+        <input type="text" name="pickup_note" placeholder="e.g. near Blaha Lujza tér, can meet evenings" value="<%= old.pickup_note || '' %>">
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>3. Photos</legend>
+    <label>Photos (up to 6)
+      <input type="file" name="photos" accept="image/png,image/jpeg,image/webp" multiple required>
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend>4. Your contact info</legend>
+    <div class="form-row">
+      <label>Your name
+        <input type="text" name="seller_name" value="<%= old.seller_name || '' %>" required>
+      </label>
+      <label class="grow">Phone, email, or messenger handle
+        <input type="text" name="seller_contact" placeholder="+36 30 123 4567 or you@example.com" value="<%= old.seller_contact || '' %>" required>
+      </label>
+    </div>
+    <p class="hint">This is shown publicly on your listing so buyers can reach you directly.</p>
+  </fieldset>
+
+  <button type="submit" class="btn btn-primary btn-large">Post item — free</button>
+</form>
+
+<script>
+  const freeCheckbox = document.getElementById('isFree');
+  const priceLabel = document.getElementById('priceLabel');
+  function togglePrice() { priceLabel.style.display = freeCheckbox.checked ? 'none' : 'block'; }
+  freeCheckbox.addEventListener('change', togglePrice);
+  togglePrice();
+</script>
+
+<%- include('partials/footer') %>

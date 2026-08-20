@@ -1,0 +1,23 @@
+{
+  "name": "budapest-rentals",
+  "version": "1.0.0",
+  "description": "No-fee apartment rental board for Budapest students & tenants. Owners pay a flat 500 Ft to publish a listing.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node db/seed.js"
+  },
+  "license": "UNLICENSED",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^11.3.0",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "leaflet": "^1.9.4",
+    "multer": "^2.0.1",
+    "node-fetch": "^2.7.0",
+    "uuid": "^9.0.1"
+  }
+}

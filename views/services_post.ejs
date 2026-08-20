@@ -1,0 +1,63 @@
+<%- include('partials/header', { pageTitle: 'Post — Jobs & Services — Budapest Rentals' }) %>
+
+<a class="back-link" href="/services">&larr; Back to jobs & services</a>
+
+<h1>Post to Jobs & Services</h1>
+<p class="subtitle">Looking for a roommate, offering tutoring, or hiring for a quick gig? Free to post, no accounts.</p>
+
+<% if (error) { %>
+  <div class="alert alert-error"><%= error %></div>
+<% } %>
+
+<form class="submit-form" method="POST" action="/services/post">
+  <fieldset>
+    <legend>1. What's this about</legend>
+
+    <label>Title
+      <input type="text" name="title" placeholder="e.g. Math tutoring, all levels" value="<%= old.title || '' %>" required>
+    </label>
+
+    <label>Description
+      <textarea name="description" rows="5" placeholder="Details: schedule, requirements, what you're offering or looking for." required><%= old.description || '' %></textarea>
+    </label>
+
+    <div class="form-row">
+      <label>Type
+        <select name="service_type" required>
+          <% serviceTypes.forEach(c => { %>
+            <option value="<%= c.value %>" <%= old.service_type === c.value ? 'selected' : '' %>><%= c.label %></option>
+          <% }) %>
+        </select>
+      </label>
+      <label>District
+        <select name="district">
+          <option value="">Not sure / flexible</option>
+          <% districts.forEach(d => { %>
+            <option value="<%= d %>" <%= old.district === d ? 'selected' : '' %>><%= d %></option>
+          <% }) %>
+        </select>
+      </label>
+    </div>
+
+    <label>Pay / price (Ft, optional)
+      <input type="number" name="compensation_huf" min="0" placeholder="Leave blank if negotiable or unpaid" value="<%= old.compensation_huf || '' %>">
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend>2. Your contact info</legend>
+    <div class="form-row">
+      <label>Your name
+        <input type="text" name="poster_name" value="<%= old.poster_name || '' %>" required>
+      </label>
+      <label class="grow">Phone, email, or messenger handle
+        <input type="text" name="poster_contact" placeholder="+36 30 123 4567 or you@example.com" value="<%= old.poster_contact || '' %>" required>
+      </label>
+    </div>
+    <p class="hint">This is shown publicly so people can reach you directly.</p>
+  </fieldset>
+
+  <button type="submit" class="btn btn-primary btn-large">Post — free</button>
+</form>
+
+<%- include('partials/footer') %>

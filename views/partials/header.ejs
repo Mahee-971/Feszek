@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof pageTitle !== 'undefined' ? pageTitle : 'Budapest Rentals — No-fee apartments for students & tenants' %></title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" href="data:,">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="/">🏠 Budapest<span>Rentals</span></a>
+      <nav class="main-nav">
+        <a href="/apartments">Apartments</a>
+        <a href="/marketplace">Marketplace</a>
+        <a href="/services">Jobs &amp; Services</a>
+        <a href="/list-your-place" class="btn btn-small btn-accent">List your place</a>
+      </nav>
+    </div>
+  </header>
+  <div class="banner">
+    Free to browse and contact, always — apartments, move-out marketplace, and jobs &amp; services, all in one place. Apartment owners pay a one-time <%= feeHuf %> Ft fee to publish.
+  </div>
+  <main class="wrap main-content">

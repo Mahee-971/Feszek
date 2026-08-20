@@ -1,0 +1,83 @@
+<%- include('partials/header', { pageTitle: 'Budapest Rentals — Apartments, Marketplace & Jobs for students' }) %>
+
+<section class="hero">
+  <h1>Everything you need to move to Budapest. Posted directly, no fees to browse.</h1>
+  <p>Apartments, move-out furniture, tutoring, roommates, part-time gigs — one site, run by students, for students.</p>
+</section>
+
+<div class="hub-grid">
+  <section class="hub-card">
+    <div class="hub-card-head">
+      <h2>🏠 Apartments</h2>
+      <span class="hub-count"><%= apartmentCount %> live</span>
+    </div>
+    <p class="hub-desc">Whole flats and rooms, listed directly by owners. Free to browse and contact — owners pay a one-time <%= feeHuf %> Ft fee to publish.</p>
+    <div class="hub-mini-grid">
+      <% recentApartments.forEach(l => { %>
+        <a class="mini-card" href="/listing/<%= l.id %>">
+          <div class="mini-photo">
+            <% if (l.coverImage) { %><img src="/uploads/photos/<%= l.coverImage %>" alt=""><% } else { %><div class="no-photo">No photo</div><% } %>
+          </div>
+          <div class="mini-body">
+            <strong><%= l.price_huf.toLocaleString('en-US') %> Ft/mo</strong>
+            <span><%= l.district %></span>
+          </div>
+        </a>
+      <% }) %>
+      <% if (recentApartments.length === 0) { %><p class="empty-state-mini">No listings yet — be the first.</p><% } %>
+    </div>
+    <div class="hub-actions">
+      <a class="btn btn-primary btn-small" href="/apartments">Browse apartments</a>
+      <a class="btn btn-ghost btn-small" href="/list-your-place">List your place</a>
+    </div>
+  </section>
+
+  <section class="hub-card">
+    <div class="hub-card-head">
+      <h2>📦 Marketplace</h2>
+      <span class="hub-count"><%= itemCount %> live</span>
+    </div>
+    <p class="hub-desc">Furniture, bikes, kitchen stuff, books — sell it or give it away before you leave. Always free to post.</p>
+    <div class="hub-mini-grid">
+      <% recentItems.forEach(it => { %>
+        <a class="mini-card" href="/marketplace/<%= it.id %>">
+          <div class="mini-photo">
+            <% if (it.coverImage) { %><img src="/uploads/photos/<%= it.coverImage %>" alt=""><% } else { %><div class="no-photo">No photo</div><% } %>
+          </div>
+          <div class="mini-body">
+            <strong><%= it.is_free ? 'Free' : it.price_huf.toLocaleString('en-US') + ' Ft' %></strong>
+            <span><%= it.title %></span>
+          </div>
+        </a>
+      <% }) %>
+      <% if (recentItems.length === 0) { %><p class="empty-state-mini">Nothing posted yet — be the first.</p><% } %>
+    </div>
+    <div class="hub-actions">
+      <a class="btn btn-primary btn-small" href="/marketplace">Browse marketplace</a>
+      <a class="btn btn-ghost btn-small" href="/marketplace/post">Post an item</a>
+    </div>
+  </section>
+
+  <section class="hub-card">
+    <div class="hub-card-head">
+      <h2>🎓 Jobs & Services</h2>
+      <span class="hub-count"><%= serviceCount %> live</span>
+    </div>
+    <p class="hub-desc">Tutoring, roommate finder, part-time gigs. Free to post, posted directly by students.</p>
+    <div class="hub-mini-grid hub-mini-list">
+      <% recentServices.forEach(post => { %>
+        <a class="mini-row" href="/services/<%= post.id %>">
+          <strong><%= post.title %></strong>
+          <span><%= post.district || 'Flexible' %></span>
+        </a>
+      <% }) %>
+      <% if (recentServices.length === 0) { %><p class="empty-state-mini">Nothing posted yet — be the first.</p><% } %>
+    </div>
+    <div class="hub-actions">
+      <a class="btn btn-primary btn-small" href="/services">Browse jobs & services</a>
+      <a class="btn btn-ghost btn-small" href="/services/post">Post</a>
+    </div>
+  </section>
+</div>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,19 @@
+<%- include('partials/header', { pageTitle: 'Pay to publish — Budapest Rentals' }) %>
+
+<div class="pay-box">
+  <div class="demo-banner">
+    ⚠️ <strong>Demo checkout</strong> — no real payment gateway is connected yet (no Barion POSKey set), so this screen simulates what the owner would see. Wire up real Barion credentials in <code>.env</code> to replace this with the real payment page.
+  </div>
+
+  <h1>Publish "<%= listing.title %>"</h1>
+  <p>One-time listing fee:</p>
+  <div class="big-price"><%= fee.toLocaleString('en-US') %> Ft</div>
+
+  <form method="POST" action="/pay/demo/<%= listing.id %>">
+    <input type="hidden" name="paymentId" value="<%= paymentId %>">
+    <button type="submit" class="btn btn-primary btn-large">Simulate successful payment</button>
+  </form>
+  <p class="hint">In production this button is replaced by Barion's real hosted checkout (card entry, wallets, etc.). No money moves in demo mode.</p>
+</div>
+
+<%- include('partials/footer') %>

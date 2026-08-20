@@ -1,0 +1,16 @@
+<%- include('partials/header', { pageTitle: 'Thank you — Budapest Rentals' }) %>
+
+<div class="pay-box">
+  <% if (listing.status === 'awaiting_payment') { %>
+    <h1>Payment not completed yet</h1>
+    <p>We haven't received confirmation of your payment. If you already paid, this can take a minute — refresh this page shortly. Otherwise <a href="/pay/<%= listing.id %>">try paying again</a>.</p>
+  <% } else { %>
+    <h1>🎉 Payment received!</h1>
+    <p>Thanks — <strong><%= listing.title %></strong> is now in our quick review queue. We check every listing (and the owner's ID) before it goes live, usually within a day.</p>
+    <p>You'll be able to find it at:</p>
+    <p><a href="/listing/<%= listing.id %>">budapestrentals.hu/listing/<%= listing.id %></a> (live once approved)</p>
+  <% } %>
+  <a class="btn btn-ghost" href="/">Back to browse</a>
+</div>
+
+<%- include('partials/footer') %>

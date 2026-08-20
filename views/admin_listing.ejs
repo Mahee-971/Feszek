@@ -1,0 +1,71 @@
+<%- include('partials/header', { pageTitle: 'Review listing — Budapest Rentals' }) %>
+
+<a class="back-link" href="/admin">&larr; Back to dashboard</a>
+
+<h1><%= listing.title %> <span class="status-pill status-<%= listing.status %>"><%= listing.status.replace(/_/g, ' ') %></span></h1>
+
+<div class="admin-review-grid">
+  <div>
+    <h2>Listing details</h2>
+    <p><strong>Address:</strong> <%= listing.address %>, <%= listing.district %></p>
+    <p><strong>Price:</strong> <%= listing.price_huf.toLocaleString('en-US') %> Ft/mo</p>
+    <p><strong>Type:</strong> <%= listing.listing_type %> · <%= listing.rooms || '?' %> rooms · <%= listing.size_m2 || '?' %> m²</p>
+    <p><strong>Description:</strong></p>
+    <p><%= listing.description %></p>
+
+    <h2>Photos</h2>
+    <div class="admin-photo-grid">
+      <% listing.images.forEach(img => { %>
+        <img src="/uploads/photos/<%= img.filename %>" class="admin-thumb">
+      <% }) %>
+      <% if (listing.images.length === 0) { %><p>No photos uploaded.</p><% } %>
+    </div>
+  </div>
+
+  <div>
+    <h2>Owner</h2>
+    <p><strong><%= listing.owner_name %></strong></p>
+    <p><%= listing.owner_phone %> · <%= listing.owner_email %></p>
+
+    <h2>ID verification</h2>
+    <p class="hint">Confirm the name on the ID matches the owner name above before approving.</p>
+    <div class="admin-photo-grid">
+      <% idDocs.forEach(doc => { %>
+        <a href="/admin/id-card/<%= doc.filename %>" target="_blank">
+          <% if (doc.filename.endsWith('.pdf')) { %>
+            <div class="pdf-thumb">PDF file — click to open</div>
+          <% } else { %>
+            <img src="/admin/id-card/<%= doc.filename %>" class="admin-thumb id-thumb">
+          <% } %>
+        </a>
+      <% }) %>
+      <% if (idDocs.length === 0) { %><p>No ID document uploaded.</p><% } %>
+    </div>
+
+    <h2>Payment</h2>
+    <% if (payment) { %>
+      <p><%= payment.provider %> · <%= payment.amount %> <%= payment.currency %> · <%= payment.status %><% if (payment.paid_at) { %> · paid <%= payment.paid_at %><% } %></p>
+    <% } else { %>
+      <p>No payment record yet.</p>
+    <% } %>
+
+    <h2>Decision</h2>
+    <% if (listing.status === 'paid_pending_review') { %>
+      <form method="POST" action="/admin/listing/<%= listing.id %>/approve">
+        <button class="btn btn-primary btn-large">✅ Approve &amp; publish</button>
+      </form>
+      <form method="POST" action="/admin/listing/<%= listing.id %>/reject" class="reject-form">
+        <input type="text" name="note" placeholder="Reason (optional, for your records)">
+        <button class="btn btn-danger">Reject</button>
+      </form>
+    <% } else if (listing.status === 'published') { %>
+      <p>✅ Published on <%= listing.published_at %>. <a href="/listing/<%= listing.id %>">View live listing</a></p>
+    <% } else if (listing.status === 'rejected') { %>
+      <p>❌ Rejected. <% if (listing.admin_note) { %>Note: <%= listing.admin_note %><% } %></p>
+    <% } else { %>
+      <p>Awaiting payment from owner.</p>
+    <% } %>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

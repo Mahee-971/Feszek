@@ -1,0 +1,38 @@
+<%- include('partials/header', { pageTitle: post.title + ' — Jobs & Services — Budapest Rentals' }) %>
+
+<a class="back-link" href="/services">&larr; Back to jobs & services</a>
+
+<% if (posted) { %>
+  <div class="alert" style="background:#e5f3ea;color:#1e5f4e;border:1px solid #b9dcc5;">✅ Your post is live!</div>
+<% } %>
+
+<div class="detail-layout">
+  <div class="detail-main">
+    <span class="service-tag"><%= serviceTypeLabel(post.service_type) %></span>
+    <h1><%= post.title %></h1>
+    <p class="detail-meta"><% if (post.district) { %><%= post.district %><% } else { %>Flexible location<% } %></p>
+
+    <h2>Description</h2>
+    <p class="description"><%= post.description %></p>
+  </div>
+
+  <aside class="detail-sidebar">
+    <div class="price-box">
+      <div class="big-price">
+        <%= post.compensation_huf ? post.compensation_huf.toLocaleString('en-US') + ' Ft' : 'Negotiable' %>
+      </div>
+    </div>
+    <div class="contact-box">
+      <h3>Contact</h3>
+      <p><strong><%= post.poster_name %></strong></p>
+      <p><%= post.poster_contact %></p>
+      <p class="fine-print">Meet in a public place for the first meeting, and use your judgment before sharing personal details.</p>
+    </div>
+    <form method="POST" action="/services/<%= post.id %>/report" onsubmit="return confirm('Report this post as spam, scam, or inappropriate?');">
+      <input type="hidden" name="reason" value="reported from post page">
+      <button type="submit" class="report-link" style="background:none;border:none;cursor:pointer;text-decoration:underline;">🚩 Report this post</button>
+    </form>
+  </aside>
+</div>
+
+<%- include('partials/footer') %>

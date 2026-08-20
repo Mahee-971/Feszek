@@ -1,0 +1,111 @@
+<%- include('partials/header', { pageTitle: 'List your place — Budapest Rentals' }) %>
+
+<h1>List your place</h1>
+<p class="subtitle">Fill in the details below. Publishing costs a one-time <strong><%= feeHuf %> Ft</strong> — no subscriptions, no recurring fees. Your listing goes live after a quick manual check.</p>
+
+<% if (error) { %>
+  <div class="alert alert-error"><%= error %></div>
+<% } %>
+
+<form class="submit-form" method="POST" action="/list-your-place" enctype="multipart/form-data">
+
+  <fieldset>
+    <legend>1. The place</legend>
+
+    <label>Title
+      <input type="text" name="title" placeholder="e.g. Bright 2-room flat near Corvinus" value="<%= old.title || '' %>" required>
+    </label>
+
+    <label>Description
+      <textarea name="description" rows="6" placeholder="Describe the place, the neighborhood, what's nearby, house rules, etc." required><%= old.description || '' %></textarea>
+    </label>
+
+    <div class="form-row">
+      <label>Listing type
+        <select name="listing_type">
+          <option value="apartment" <%= old.listing_type === 'apartment' ? 'selected' : '' %>>Whole apartment</option>
+          <option value="room" <%= old.listing_type === 'room' ? 'selected' : '' %>>Room in shared flat</option>
+        </select>
+      </label>
+      <label>Monthly rent (Ft)
+        <input type="number" name="price_huf" min="1" placeholder="180000" value="<%= old.price_huf || '' %>" required>
+      </label>
+    </div>
+
+    <div class="form-row">
+      <label>Rooms
+        <input type="number" step="0.5" name="rooms" placeholder="2" value="<%= old.rooms || '' %>">
+      </label>
+      <label>Size (m²)
+        <input type="number" name="size_m2" placeholder="55" value="<%= old.size_m2 || '' %>">
+      </label>
+      <label>Available from
+        <input type="date" name="available_from" value="<%= old.available_from || '' %>">
+      </label>
+    </div>
+
+    <div class="checkbox-row">
+      <label><input type="checkbox" name="bills_included" <%= old.bills_included ? 'checked' : '' %>> Bills included</label>
+      <label><input type="checkbox" name="furnished" <%= old.furnished ? 'checked' : '' %>> Furnished</label>
+      <label><input type="checkbox" name="pets_allowed" <%= old.pets_allowed ? 'checked' : '' %>> Pets allowed</label>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>2. Location</legend>
+    <div class="form-row">
+      <label class="grow">Street address
+        <input type="text" name="address" id="addressInput" placeholder="e.g. Rákóczi út 12" value="<%= old.address || '' %>" required>
+      </label>
+      <label>District
+        <select name="district" required>
+          <option value="">Select district</option>
+          <% districts.forEach(d => { %>
+            <option value="<%= d %>" <%= old.district === d ? 'selected' : '' %>><%= d %></option>
+          <% }) %>
+        </select>
+      </label>
+    </div>
+    <button type="button" id="locateBtn" class="btn btn-ghost btn-small">📍 Find on map</button>
+    <p class="hint">We use OpenStreetMap to place a pin at your address — drag it to fine-tune the exact spot. The pin is what tenants see on the listing page.</p>
+    <div id="pickMap" class="pick-map"></div>
+    <input type="hidden" name="lat" id="latInput" value="<%= old.lat || '' %>">
+    <input type="hidden" name="lng" id="lngInput" value="<%= old.lng || '' %>">
+  </fieldset>
+
+  <fieldset>
+    <legend>3. Photos</legend>
+    <label>Photos of the place (up to 8)
+      <input type="file" name="photos" accept="image/png,image/jpeg,image/webp" multiple required>
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend>4. Your details (owner)</legend>
+    <p class="hint">This information is used to contact you and verify you're the real owner/manager of the place. Your ID card is reviewed privately by our team and is <strong>never shown publicly</strong>.</p>
+
+    <div class="form-row">
+      <label>Full name
+        <input type="text" name="owner_name" value="<%= old.owner_name || '' %>" required>
+      </label>
+      <label>Phone number
+        <input type="tel" name="owner_phone" placeholder="+36 30 123 4567" value="<%= old.owner_phone || '' %>" required>
+      </label>
+      <label>Email
+        <input type="email" name="owner_email" value="<%= old.owner_email || '' %>" required>
+      </label>
+    </div>
+
+    <label>ID card photo/scan (front, and back if needed)
+      <input type="file" name="idDocs" accept="image/png,image/jpeg,application/pdf" multiple required>
+    </label>
+  </fieldset>
+
+  <button type="submit" class="btn btn-primary btn-large">Continue to payment — <%= feeHuf %> Ft</button>
+</form>
+
+<link rel="stylesheet" href="/vendor/leaflet/leaflet.css" />
+<script src="/vendor/leaflet/leaflet.js"></script>
+<script src="/js/pick-map.js"></script>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,51 @@
+<%- include('partials/header', { pageTitle: 'Jobs & Services — Budapest Rentals' }) %>
+
+<a class="back-link" href="/">&larr; All categories</a>
+
+<section class="hero">
+  <h1>Tutoring, roommates, part-time gigs.</h1>
+  <p>Posted directly by students — free to post, no accounts, no middleman.</p>
+</section>
+
+<form class="filters" method="GET" action="/services">
+  <select name="serviceType">
+    <option value="">All types</option>
+    <% serviceTypes.forEach(c => { %>
+      <option value="<%= c.value %>" <%= filters.serviceType === c.value ? 'selected' : '' %>><%= c.label %></option>
+    <% }) %>
+  </select>
+
+  <select name="district">
+    <option value="">All districts</option>
+    <% districts.forEach(d => { %>
+      <option value="<%= d %>" <%= filters.district === d ? 'selected' : '' %>><%= d %></option>
+    <% }) %>
+  </select>
+
+  <button type="submit" class="btn btn-primary">Search</button>
+  <% if (filters.serviceType || filters.district) { %>
+    <a href="/services" class="btn btn-ghost">Clear</a>
+  <% } %>
+</form>
+
+<p class="result-count"><%= results.length %> post<%= results.length === 1 ? '' : 's' %></p>
+
+<div class="post-list">
+  <% if (results.length === 0) { %>
+    <p class="empty-state">Nothing posted yet matching that filter. Be the first — <a href="/services/post">post one</a>, it's free.</p>
+  <% } %>
+  <% results.forEach(post => { %>
+    <a class="post-row" href="/services/<%= post.id %>">
+      <div class="post-row-main">
+        <span class="service-tag"><%= serviceTypeLabel(post.service_type) %></span>
+        <h3><%= post.title %></h3>
+        <p class="card-meta"><% if (post.district) { %><%= post.district %><% } else { %>Flexible location<% } %></p>
+      </div>
+      <div class="post-row-price">
+        <%= post.compensation_huf ? post.compensation_huf.toLocaleString('en-US') + ' Ft' : 'Negotiable' %>
+      </div>
+    </a>
+  <% }) %>
+</div>
+
+<%- include('partials/footer') %>

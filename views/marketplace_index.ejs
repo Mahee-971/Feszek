@@ -1,0 +1,63 @@
+<%- include('partials/header', { pageTitle: 'Marketplace — Budapest Rentals' }) %>
+
+<a class="back-link" href="/">&larr; All categories</a>
+
+<section class="hero">
+  <h1>Moving out? Don't dump it, sell or give it away.</h1>
+  <p>Furniture, bikes, kitchen stuff, books — posted directly by students. Always free to browse and post.</p>
+</section>
+
+<form class="filters" method="GET" action="/marketplace">
+  <select name="category">
+    <option value="">All categories</option>
+    <% categories.forEach(c => { %>
+      <option value="<%= c.value %>" <%= filters.category === c.value ? 'selected' : '' %>><%= c.label %></option>
+    <% }) %>
+  </select>
+
+  <select name="district">
+    <option value="">All districts</option>
+    <% districts.forEach(d => { %>
+      <option value="<%= d %>" <%= filters.district === d ? 'selected' : '' %>><%= d %></option>
+    <% }) %>
+  </select>
+
+  <input type="number" name="maxPrice" placeholder="Max price (Ft)" value="<%= filters.maxPrice || '' %>">
+
+  <label style="display:flex;align-items:center;gap:6px;font-size:0.9rem;">
+    <input type="checkbox" name="freeOnly" value="1" <%= filters.freeOnly ? 'checked' : '' %> style="width:auto;"> Free only
+  </label>
+
+  <button type="submit" class="btn btn-primary">Search</button>
+  <% if (filters.category || filters.district || filters.maxPrice || filters.freeOnly) { %>
+    <a href="/marketplace" class="btn btn-ghost">Clear</a>
+  <% } %>
+</form>
+
+<p class="result-count"><%= results.length %> item<%= results.length === 1 ? '' : 's' %> available</p>
+
+<div class="listing-grid">
+  <% if (results.length === 0) { %>
+    <p class="empty-state">Nothing posted yet matching that filter. Be the first — <a href="/marketplace/post">post an item</a>, it's free.</p>
+  <% } %>
+  <% results.forEach(item => { %>
+    <a class="listing-card" href="/marketplace/<%= item.id %>">
+      <div class="card-photo">
+        <% if (item.coverImage) { %>
+          <img src="/uploads/photos/<%= item.coverImage %>" alt="<%= item.title %>">
+        <% } else { %>
+          <div class="no-photo">No photo</div>
+        <% } %>
+        <span class="card-price <%= item.is_free ? 'free-badge' : '' %>">
+          <%= item.is_free ? 'FREE' : item.price_huf.toLocaleString('en-US') + ' Ft' %>
+        </span>
+      </div>
+      <div class="card-body">
+        <h3><%= item.title %></h3>
+        <p class="card-meta"><%= categoryLabel(item.category) %><% if (item.district) { %> · <%= item.district %><% } %></p>
+      </div>
+    </a>
+  <% }) %>
+</div>
+
+<%- include('partials/footer') %>

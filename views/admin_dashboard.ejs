@@ -1,0 +1,167 @@
+<%- include('partials/header', { pageTitle: 'Admin dashboard — Budapest Rentals' }) %>
+
+<div class="admin-header">
+  <h1>Admin dashboard</h1>
+  <form method="POST" action="/admin/logout"><button class="btn btn-ghost btn-small">Log out</button></form>
+</div>
+
+<section>
+  <h2>Pending review (<%= pendingReview.length %>)</h2>
+  <p class="hint">Paid listings waiting for you to check the ID card and details before they go live.</p>
+  <table class="admin-table">
+    <thead><tr><th>Title</th><th>District</th><th>Price</th><th>Owner</th><th>Paid</th><th></th></tr></thead>
+    <tbody>
+      <% pendingReview.forEach(l => { %>
+        <tr>
+          <td><%= l.title %></td>
+          <td><%= l.district %></td>
+          <td><%= l.price_huf.toLocaleString('en-US') %> Ft</td>
+          <td><%= l.owner_name %></td>
+          <td><%= l.paid_at %></td>
+          <td><a class="btn btn-small btn-primary" href="/admin/listing/<%= l.id %>">Review</a></td>
+        </tr>
+      <% }) %>
+      <% if (pendingReview.length === 0) { %><tr><td colspan="6">Nothing waiting for review.</td></tr><% } %>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Awaiting payment (<%= awaitingPayment.length %>)</h2>
+  <p class="hint">Drafts submitted by owners who haven't paid the <%= feeHuf %> Ft fee yet. Use "Mark paid" for bank-transfer/manual payments.</p>
+  <table class="admin-table">
+    <thead><tr><th>Title</th><th>Owner</th><th>Submitted</th><th></th></tr></thead>
+    <tbody>
+      <% awaitingPayment.forEach(l => { %>
+        <tr>
+          <td><%= l.title %></td>
+          <td><%= l.owner_name %> — <%= l.owner_email %></td>
+          <td><%= l.created_at %></td>
+          <td>
+            <a class="btn btn-small btn-ghost" href="/admin/listing/<%= l.id %>">View</a>
+            <form style="display:inline" method="POST" action="/admin/listing/<%= l.id %>/mark-paid">
+              <button class="btn btn-small btn-accent">Mark paid</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+      <% if (awaitingPayment.length === 0) { %><tr><td colspan="4">None.</td></tr><% } %>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>All listings</h2>
+  <table class="admin-table">
+    <thead><tr><th>Title</th><th>Status</th><th>Created</th><th></th></tr></thead>
+    <tbody>
+      <% all.forEach(l => { %>
+        <tr>
+          <td><%= l.title %></td>
+          <td><span class="status-pill status-<%= l.status %>"><%= l.status.replace(/_/g, ' ') %></span></td>
+          <td><%= l.created_at %></td>
+          <td><a class="btn btn-small btn-ghost" href="/admin/listing/<%= l.id %>">View</a></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Marketplace — reported items (<%= reportedItems.length %>)</h2>
+  <p class="hint">Items someone flagged as spam, scam, or inappropriate. Review and remove or dismiss.</p>
+  <table class="admin-table">
+    <thead><tr><th>Title</th><th>Reports</th><th>Seller</th><th></th></tr></thead>
+    <tbody>
+      <% reportedItems.forEach(it => { %>
+        <tr>
+          <td><a href="/marketplace/<%= it.id %>" target="_blank"><%= it.title %></a></td>
+          <td><%= it.report_count %></td>
+          <td><%= it.seller_name %> — <%= it.seller_contact %></td>
+          <td>
+            <form style="display:inline" method="POST" action="/admin/marketplace/<%= it.id %>/dismiss-reports">
+              <button class="btn btn-small btn-ghost">Dismiss</button>
+            </form>
+            <form style="display:inline" method="POST" action="/admin/marketplace/<%= it.id %>/remove">
+              <button class="btn btn-small btn-danger">Remove</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+      <% if (reportedItems.length === 0) { %><tr><td colspan="4">Nothing reported right now.</td></tr><% } %>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Marketplace — all items</h2>
+  <table class="admin-table">
+    <thead><tr><th>Title</th><th>Status</th><th>Created</th><th></th></tr></thead>
+    <tbody>
+      <% allItems.forEach(it => { %>
+        <tr>
+          <td><a href="/marketplace/<%= it.id %>" target="_blank"><%= it.title %></a></td>
+          <td><span class="status-pill status-<%= it.status %>"><%= it.status %></span></td>
+          <td><%= it.created_at %></td>
+          <td>
+            <% if (it.status === 'active') { %>
+              <form method="POST" action="/admin/marketplace/<%= it.id %>/remove">
+                <button class="btn btn-small btn-danger">Remove</button>
+              </form>
+            <% } %>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Jobs & Services — reported posts (<%= reportedServices.length %>)</h2>
+  <table class="admin-table">
+    <thead><tr><th>Title</th><th>Reports</th><th>Poster</th><th></th></tr></thead>
+    <tbody>
+      <% reportedServices.forEach(p => { %>
+        <tr>
+          <td><a href="/services/<%= p.id %>" target="_blank"><%= p.title %></a></td>
+          <td><%= p.report_count %></td>
+          <td><%= p.poster_name %> — <%= p.poster_contact %></td>
+          <td>
+            <form style="display:inline" method="POST" action="/admin/services/<%= p.id %>/dismiss-reports">
+              <button class="btn btn-small btn-ghost">Dismiss</button>
+            </form>
+            <form style="display:inline" method="POST" action="/admin/services/<%= p.id %>/remove">
+              <button class="btn btn-small btn-danger">Remove</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+      <% if (reportedServices.length === 0) { %><tr><td colspan="4">Nothing reported right now.</td></tr><% } %>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Jobs & Services — all posts</h2>
+  <table class="admin-table">
+    <thead><tr><th>Title</th><th>Status</th><th>Created</th><th></th></tr></thead>
+    <tbody>
+      <% allServices.forEach(p => { %>
+        <tr>
+          <td><a href="/services/<%= p.id %>" target="_blank"><%= p.title %></a></td>
+          <td><span class="status-pill status-<%= p.status %>"><%= p.status %></span></td>
+          <td><%= p.created_at %></td>
+          <td>
+            <% if (p.status === 'active') { %>
+              <form method="POST" action="/admin/services/<%= p.id %>/remove">
+                <button class="btn btn-small btn-danger">Remove</button>
+              </form>
+            <% } %>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</section>
+
+<%- include('partials/footer') %>
